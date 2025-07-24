@@ -25,7 +25,6 @@ class EmotionModelV1:
     def _build_model(self):
         model = Sequential()
 
-        # Must match the saved weight structure exactly
         model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)))
         model.add(Conv2D(64, (3, 3), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -93,7 +92,7 @@ class EmotionModelV2:
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
 
-        model.add(Dense(512))  # <-- تم التعديل هنا
+        model.add(Dense(512))
         model.add(BatchNormalization())
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
@@ -101,11 +100,10 @@ class EmotionModelV2:
         model.add(Dense(7, activation='softmax'))
 
         model.compile(optimizer=Adam(learning_rate=0.0001),
-                    loss='categorical_crossentropy',
-                    metrics=['accuracy'])
+                      loss='categorical_crossentropy',
+                      metrics=['accuracy'])
         return model
 
     def predict_emotion(self, img):
         preds = self.model.predict(img)
         return EmotionModelV2.EMOTIONS_LIST[preds.argmax()]
- 

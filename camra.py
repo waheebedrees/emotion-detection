@@ -3,14 +3,14 @@ import numpy as np
 from model import EmotionModelV2, EmotionModelV1
 
 # Initialize face detector
-face_detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+face_detector = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
 
 # Load emotion model
-weights_path = 'emotion_model.h5'
+weights_path = 'models/emotion_model.h5'
 emotion_model = EmotionModelV1(weights_path)
 
 
-# weights_path = 'model_weights.h5'
+# weights_path = 'models/model_weights.h5'
 # emotion_model = EmotionModelV2(weights_path)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
