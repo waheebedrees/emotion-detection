@@ -1,4 +1,4 @@
-from camra import VideoCamera 
+from camera import VideoCamera
 from flask import Flask, Response, render_template
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
