@@ -92,7 +92,7 @@ class EmotionModelV2:
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
 
-        model.add(Dense(512))
+        model.add(Dense(512))  
         model.add(BatchNormalization())
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
@@ -100,10 +100,11 @@ class EmotionModelV2:
         model.add(Dense(7, activation='softmax'))
 
         model.compile(optimizer=Adam(learning_rate=0.0001),
-                      loss='categorical_crossentropy',
-                      metrics=['accuracy'])
+                    loss='categorical_crossentropy',
+                    metrics=['accuracy'])
         return model
 
     def predict_emotion(self, img):
         preds = self.model.predict(img)
         return EmotionModelV2.EMOTIONS_LIST[preds.argmax()]
+ 
