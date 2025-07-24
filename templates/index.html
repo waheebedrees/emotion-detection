@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Emotion Detection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 1rem;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    #video-container {
+      position: relative;
+      width: 480px;
+      height: 360px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #video-stream {
+      width: 480px;
+      height: 360px;
+      display: block;
+    }
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 480px;
+      height: 360px;
+      pointer-events: none;
+    }
+    #controls {
+      margin-top: 1rem;
+    }
+    button {
+      background-color: #6200ee;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      color: white;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3700b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Live Emotion Detection</h1>
+
+  <div id="video-container">
+    <!-- Flask video feed as img -->
+    <img src="{{ url_for('video_feed') }}" id="video-stream" alt="Video stream" />
+    <!-- Canvas to draw bounding boxes and labels -->
+    <canvas id="overlay"></canvas>
+  </div>
+
+  <div id="controls">
+    <button id="toggle-btn">Stop Camera</button>
+  </div>
+
+  <script>
+    const videoStream = document.getElementById('video-stream');
+    const overlay = document.getElementById('overlay');
+    const ctx = overlay.getContext('2d');
+    const toggleBtn = document.getElementById('toggle-btn');
+
+    let streaming = true;
+
+    // Set canvas size to match video
+    overlay.width = 480;
+    overlay.height = 360;
+
+    // Fake data for bounding boxes and emotions — replace with real data from backend
+    // Expected format: [{x, y, w, h, emotion}]
+    let detections = [];
+
+    // Example function to fetch detection data from backend
+    async function fetchDetections() {
+      // Replace '/api/emotions' with your backend endpoint returning JSON detection data
+      try {
+        const response = await fetch('/api/emotions');
+        if (!response.ok) throw new Error('Network error');
+        detections = await response.json();
+      } catch (error) {
+        console.warn('Failed to fetch detections:', error);
+      }
+    }
+
+    function drawDetections() {
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      ctx.lineWidth = 2;
+      ctx.font = '18px Arial';
+      ctx.textBaseline = 'top';
+
+      detections.forEach(({x, y, w, h, emotion}) => {
+        // Draw rectangle
+        ctx.strokeStyle = '#00ff00';
+        ctx.strokeRect(x, y, w, h);
+
+        // Draw filled box for text background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        const textWidth = ctx.measureText(emotion).width;
+        const textHeight = 20;
+        ctx.fillRect(x, y - textHeight, textWidth + 10, textHeight);
+
+        // Draw emotion label
+        ctx.fillStyle = '#00ff00';
+        ctx.fillText(emotion, x + 5, y - textHeight + 2);
+      });
+    }
+
+    async function update() {
+      if (!streaming) return;
+      await fetchDetections();
+      drawDetections();
+      requestAnimationFrame(update);
+    }
+
+    // Start update loop
+    update();
+
+    toggleBtn.onclick = () => {
+      streaming = !streaming;
+      toggleBtn.textContent = streaming ? 'Stop Camera' : 'Start Camera';
+      if (streaming) update();
+      else ctx.clearRect(0, 0, overlay.width, overlay.height);
+    };
+  </script>
+</body>
+</html>

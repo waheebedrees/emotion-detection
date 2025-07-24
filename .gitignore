@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+*.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Model weights (optional, usually large - better to store elsewhere)
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Flask cache, pycache, etc
+instance/
+.pytest_cache/
